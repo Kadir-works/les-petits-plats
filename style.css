@@ -1,0 +1,24 @@
+.search-header {
+  background-image: url("images/search-background.jpg"); 
+  background-size: cover;
+  background-position: center; 
+  padding: 80px 0 60px; 
+  
+}
+
+.search-title {
+  color: #FFD15B;
+  font-size: 44px;
+  font-weight: 400; /* Regular */
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+
+.search-header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.search-header input {
+  max-width: 500px;
+}
