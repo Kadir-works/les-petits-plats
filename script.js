@@ -2,6 +2,39 @@
 const recipesContainer = document.getElementById("recipes");
 const searchInput = document.getElementById("search");
 
+//  fonction pour extraire les tags
+function getUniqueTags(recipesList, type) {
+  const tags = new Set();
+  recipesList.forEach((recipe) => {
+    if (type === "ingredients") {
+      recipe.ingredients.forEach((ingredient) => {
+        tags.add(ingredient.ingredient.toLowerCase());
+      });
+    } else if (type === "appliances") {
+      tags.add(recipe.appliance.toLowerCase());
+    } else if (type === "utensils") {
+      recipe.ustensils.forEach((utensil) => {
+        tags.add(utensil.toLowerCase());
+      });
+    }
+  });
+  return Array.from(tags).sort(); // Convertir le Set en Array et trier
+}
+// fonction pour générer et afficher les filtres
+function displayTags(tagsList, elementId) {
+  const listElement = document.getElementById(elementId);
+  listElement.innerHTML = tagsList
+    .map((tag) => `<li><a class="dropdown-item" href="#">${tag}</a></li>`)
+    .join("");
+}
+// Au chargement initial
+const allIngredients = getUniqueTags(recipes, "ingredients");
+const allAppliances = getUniqueTags(recipes, "appliances");
+const allUtensils = getUniqueTags(recipes, "utensils");
+
+displayTags(allIngredients, "ingredients-list");
+displayTags(allAppliances, "appliances-list");
+displayTags(allUtensils, "utensils-list");
 // Fonction pour créer une carte recette HTML
 function createRecipeCard(recipe) {
   return `
