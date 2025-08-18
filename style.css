@@ -1,8 +1,17 @@
+.container {
+  background-color: #e5e5e5;
+  margin: 0 auto !important;
+  max-width: 1440px;
+  padding: 20px 102px;  
+}
+
 .search-header {
   background-image: url("images/search-background.jpg"); 
   background-size: cover;
   background-position: center; 
   padding: 80px 0 60px; 
+  max-width: 1440px;
+  margin: 0 auto;
   
 }
 
@@ -21,4 +30,58 @@
 
 .search-header input {
   max-width: 500px;
+}
+/* style pour le filtre  */
+.filter-gap {
+  gap: 66px;
+}
+.filter-dropdown{
+  
+}
+
+
+/* Style pour l'ensemble des cartes de recettes */
+.row{
+  justify-content: space-between;
+}
+
+.col-md-4{
+  width: 380px;
+  height: 731px;
+  overflow: hidden;
+  margin-bottom: 65px; 
+}
+
+.card {
+    border: none; /* Pas de bordure par défaut de Bootstrap */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Assure que l'image de la carte est ronde sur les coins supérieurs */
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 253px; /* Hauteur fixe pour toutes les images */
+    object-fit: cover; /* Recadre l'image pour qu'elle remplisse l'espace */
+}
+
+/* Style pour le texte à l'intérieur de la carte */
+.card-body p {
+    font-size: 0.9rem;
+}
+
+/* Ajoute un peu de style aux éléments de la liste d'ingrédients */
+.list-group-item {
+    border: none;
+    padding: 0.5rem 0;
+}
+
+/* Limite le texte à 4 lignes maximum */
+.card-body p.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* Limite à 4 lignes */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Ajoute "..." à la fin */
 }

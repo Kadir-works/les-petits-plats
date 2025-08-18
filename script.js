@@ -37,16 +37,45 @@ displayTags(allAppliances, "appliances-list");
 displayTags(allUtensils, "utensils-list");
 // Fonction pour créer une carte recette HTML
 function createRecipeCard(recipe) {
+  // Définis la longueur maximale de la description
+  const MAX_LENGTH = 150;
+  let description = recipe.description;
+
+  // Si la description est plus longue que la limite, la tronquer et ajouter "..."
+  if (description.length > MAX_LENGTH) {
+    description = description.substring(0, MAX_LENGTH) + "...";
+  }
+  // Crée les colonnes pour chaque ingrédient
+  const ingredientsColumns = recipe.ingredients
+    .map((ing) => {
+      return `
+      <div class="col-6">
+        <strong>${ing.ingredient}</strong>
+        <span class="d-block text-muted">
+          ${ing.quantity ? ing.quantity : ""} ${ing.unit ? ing.unit : ""}
+        </span>
+      </div>
+    `;
+    })
+    .join("");
+
   return `
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card h-100 position-relative">
         <img src="images/${recipe.image}" class="card-img-top" alt="${recipe.name}">
-        <div class="card-body">
-          <h5 class="card-title">${recipe.name}</h5>
-          <p class="card-text">${recipe.description}</p>
+        <div class="position-absolute top-0 end-0 mt-2 me-2 px-2 py-1 rounded-pill bg-warning text-dark fw-bold">
+         ${recipe.time} min
         </div>
-        <div class="card-footer">
-          <small class="text-muted">⏱ ${recipe.time} min</small>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">${recipe.name}</h5>
+          </div>
+          <p class="card-text text-uppercase text-muted fw-bold">Recette</p>
+          <p class="card-text mb-3">${recipe.description}</p>
+          <p class="card-text text-uppercase text-muted fw-bold">Ingrédients</p>
+          <div class="row row-cols-2 g-2">
+            ${ingredientsColumns}
+          </div>
         </div>
       </div>
     </div>
