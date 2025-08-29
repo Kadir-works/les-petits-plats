@@ -5,6 +5,49 @@
   padding: 20px 102px;  
 }
 
+/* Styles pour la barre de recherche */
+.search-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.search-wrapper .input-group {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.search-wrapper .form-control {
+    border: none;
+    padding: 1rem 2rem;
+    background-color: white;
+}
+
+.search-wrapper .form-control:focus {
+    box-shadow: none;
+}
+
+.search-wrapper .search-icon-btn {
+    background-color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Styles pour l'image de la loupe */
+.search-wrapper .search-icon-btn img {
+    height: 40px; /* Ajustez la taille de l'image de la loupe */
+    width: auto;
+    cursor: pointer;
+
+}
+
+
+
+
+
+
 .search-header {
   background-image: url("images/search-background.jpg"); 
   background-size: cover;
@@ -24,8 +67,14 @@
 }
 
 .search-header h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-family: 'Anton', sans-serif;
+    font-size: 44px; /* Taille de police demandée */
+    line-height: 1.2;
+    max-width: 800px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    color: #FFD15B;
+    margin: 0 auto;
 }
 
 .search-header input {
