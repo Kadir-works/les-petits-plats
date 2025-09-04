@@ -1,21 +1,28 @@
-// Fonction pour créer le code HTML d'une carte de recette
-export function createRecipeCard(recipe) {
+// js/display.js
+
+/**
+ * Crée le code HTML d'une carte de recette.
+ * @param {object} recipe - L'objet recette.
+ * @returns {string} Le HTML de la carte de recette.
+ */
+function createRecipeCard(recipe) {
   const MAX_DESCRIPTION_LENGTH = 150;
   let description = recipe.description;
 
-  // Tronque la description si elle est trop longue
   if (description.length > MAX_DESCRIPTION_LENGTH) {
     description = description.substring(0, MAX_DESCRIPTION_LENGTH) + "...";
   }
 
-  // Crée la liste des ingrédients
   const ingredientsColumns = recipe.ingredients
     .map((ing) => {
+      // Ajoute la quantité et l'unité si elles existent
+      const quantity = ing.quantity ? `${ing.quantity}` : "";
+      const unit = ing.unit ? `${ing.unit}` : "";
       return `
       <div class="col-6">
         <strong>${ing.ingredient}</strong>
         <span class="d-block text-muted">
-          ${ing.quantity ? ing.quantity : ""} ${ing.unit ? ing.unit : ""}
+          ${quantity} ${unit}
         </span>
       </div>
     `;
@@ -45,27 +52,31 @@ export function createRecipeCard(recipe) {
   `;
 }
 
-// Fonction pour afficher toutes les cartes de recettes
+/**
+ * Affiche toutes les cartes de recettes dans le conteneur principal.
+ * @param {Array<object>} recipesList - Le tableau de recettes à afficher.
+ */
 export function displayRecipes(recipesList) {
   const recipesContainer = document.getElementById("recipes");
 
-  // Vérifie si le conteneur existe
   if (!recipesContainer) {
     console.error("Le conteneur des recettes n'a pas été trouvé.");
     return;
   }
 
-  recipesContainer.innerHTML = ""; // Vide le conteneur avant d'afficher les nouvelles recettes
+  // Vide le conteneur avant d'ajouter les nouvelles recettes
+  recipesContainer.innerHTML = "";
 
   if (recipesList.length === 0) {
     recipesContainer.innerHTML = `
       <div class="col-12 text-center">
-        <p class="text-muted">Aucune recette ne contient votre recherche. Vous pouvez essayer « tarte aux pommes », « poisson », etc.</p>
+        <p class="text-muted">Aucune recette ne correspond à votre critère. Vous pouvez chercher "tarte aux pommes", "poisson", etc.</p>
       </div>
     `;
   } else {
-    recipesList.forEach((recipe) => {
-      recipesContainer.innerHTML += createRecipeCard(recipe);
-    });
+    // Crée une chaîne de caractères contenant toutes les cartes de recettes
+    const allRecipeCardsHTML = recipesList.map(createRecipeCard).join("");
+    // Insère le tout en une seule fois pour une meilleure performance
+    recipesContainer.innerHTML = allRecipeCardsHTML;
   }
 }

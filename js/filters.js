@@ -1,13 +1,15 @@
+// js/filters.js
+
 import { selectedFilters, filterRecipes } from "./main.js";
 
 /**
- * Extrait et retourne une liste unique de tags (ingrédients, ustensiles ou appareils)
+ * Extrait et retourne une liste unique et triée de tags (ingrédients, appareils, ustensiles)
  * à partir d'un tableau de recettes.
- * @param {Array} recipesList - Le tableau de recettes à partir duquel extraire les tags.
- * @param {string} type - Le type de tags à extraire ('ingredients', 'appliances', ou 'ustensils').
- * @returns {Array} Un tableau de chaînes de caractères contenant les tags uniques et triés.
+ * @param {Array<object>} recipesList - Le tableau de recettes à partir duquel extraire les tags.
+ * @param {string} type - Le type de tags à extraire ('ingredients', 'appareils', ou 'ustensiles').
+ * @returns {Array<string>} Un tableau de chaînes de caractères contenant les tags uniques et triés.
  */
-export function getUniqueTags(recipesList, type) {
+function getUniqueTags(recipesList, type) {
   const tags = new Set();
   recipesList.forEach((recipe) => {
     if (type === "ingredients") {
@@ -16,7 +18,7 @@ export function getUniqueTags(recipesList, type) {
       });
     } else if (type === "appliances") {
       tags.add(recipe.appliance.toLowerCase());
-    } else if (type === "ustensils") {
+    } else if (type === "utensils") {
       recipe.ustensils.forEach((ustensil) => {
         tags.add(ustensil.toLowerCase());
       });
@@ -26,120 +28,159 @@ export function getUniqueTags(recipesList, type) {
 }
 
 /**
- * Génère et affiche les tags dans un élément de liste HTML.
- * @param {Array} tagsList - Le tableau de tags à afficher.
- * @param {string} elementId - L'ID de l'élément UL dans lequel afficher les tags.
+ * Affiche les tags filtrés dans les menus déroulants.
+ * @param {Array<string>} tagsList - La liste des tags à afficher.
+ * @param {string} elementId - L'ID de l'élément UL (liste) où les tags seront affichés.
+ * @param {string} type - Le type de tag ('ingredients', 'appliances', 'utensils').
  */
-export function displayFilterTags(tagsList, elementId) {
+function displayFilterTags(tagsList, elementId, type) {
   const listElement = document.getElementById(elementId);
-  listElement.innerHTML = tagsList
-    .map((tag) => `<li><a class="dropdown-item" href="#">${tag}</a></li>`)
-    .join("");
+  if (!listElement) {
+    console.error(`L'élément avec l'ID ${elementId} n'a pas été trouvé.`);
+    return;
+  }
+
+  listElement.innerHTML = ""; // Vide la liste actuelle
+
+  tagsList.forEach((tag) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<a class="dropdown-item" href="#" data-value="${tag}" data-type="${type}">${tag}</a>`;
+    listElement.appendChild(li);
+  });
 }
 
 /**
- * Met à jour et affiche toutes les listes de tags des filtres.
- * @param {Array} recipesList - Le tableau de recettes filtrées pour générer les nouveaux tags.
+ * Met à jour les tags des menus déroulants en fonction des recettes affichées.
+ * @param {Array<object>} recipesList - Le tableau de recettes affichées.
  */
 export function updateFilterTags(recipesList) {
-  const allIngredients = getUniqueTags(recipesList, "ingredients");
-  const allAppliances = getUniqueTags(recipesList, "appliances");
-  const allUtensils = getUniqueTags(recipesList, "ustensils");
+  // Exclut les tags déjà sélectionnés
+  const ingredients = getUniqueTags(recipesList, "ingredients").filter(
+    (tag) => !selectedFilters.ingredients.includes(tag)
+  );
+  const appliances = getUniqueTags(recipesList, "appliances").filter(
+    (tag) => !selectedFilters.appliances.includes(tag)
+  );
+  const utensils = getUniqueTags(recipesList, "utensils").filter(
+    (tag) => !selectedFilters.utensils.includes(tag)
+  );
 
-  displayFilterTags(allIngredients, "ingredients-list");
-  displayFilterTags(allAppliances, "appliances-list");
-  displayFilterTags(allUtensils, "utensils-list");
+  // Met à jour les listes déroulantes
+  displayFilterTags(ingredients, "ingredients-list", "ingredients");
+  displayFilterTags(appliances, "appliances-list", "appliances");
+  displayFilterTags(utensils, "utensils-list", "utensils");
 }
-
-export function addFilterInputListeners() {
-  // Ciblez les listes et trouvez leurs inputs associés
-  const ingredientList = document.getElementById("ingredients-list");
-  const applianceList = document.getElementById("appliances-list");
-  const utensilList = document.getElementById("utensils-list");
-
-  // Ajoutez un écouteur d'événement à l'input associé à chaque liste
-  if (ingredientList) {
-    const ingredientInput = ingredientList.parentElement.querySelector("input");
-    if (ingredientInput) {
-      ingredientInput.addEventListener("input", () => {
-        filterTagList("ingredients-list", ingredientInput.value);
-      });
-    }
-  }
-
-  if (applianceList) {
-    const applianceInput = applianceList.parentElement.querySelector("input");
-    if (applianceInput) {
-      applianceInput.addEventListener("input", () => {
-        filterTagList("appliances-list", applianceInput.value);
-      });
-    }
-  }
-
-  if (utensilList) {
-    const utensilInput = utensilList.parentElement.querySelector("input");
-    if (utensilInput) {
-      utensilInput.addEventListener("input", () => {
-        filterTagList("utensils-list", utensilInput.value);
-      });
-    }
-  }
-}
-
-function filterTagList(listId, query) {
-  const list = document.getElementById(listId);
-  const items = list.querySelectorAll("li");
-
-  items.forEach((item) => {
-    if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
-      item.style.display = "block";
-    } else {
-      item.style.display = "none";
-    }
-  });
-}
-
-export function addTagSelectionListeners() {
-  const lists = ["ingredients-list", "appliances-list", "utensils-list"];
-
-  lists.forEach((listId) => {
-    const list = document.getElementById(listId);
-
-    list.addEventListener("click", (event) => {
-      if (event.target.tagName === "A") {
-        const tag = event.target.textContent;
-        const type = listId.split("-")[0]; // Extrait le type (ingredients, appliances, utensils)
-        addTag(tag, type);
-        event.target.parentElement.remove(); // Supprime l'élément de la liste
-      }
-    });
-  });
-}
-
-function addTag(tag, type) {
+/**
+ * Crée un tag sélectionné dans l'interface et le stocke dans 'selectedFilters'.
+ * @param {string} tag - Le texte du tag.
+ * @param {string} type - Le type de tag ('ingredients', 'appliances', 'utensils').
+ */
+function createSelectedTag(tag, type) {
   const selectedTagsContainer = document.getElementById("selected-tags");
 
+  if (!selectedTagsContainer) {
+    console.error("Le conteneur de tags sélectionnés n'a pas été trouvé.");
+    return;
+  }
+
+  if (selectedFilters[type].includes(tag.toLowerCase())) return;
+
   const tagElement = document.createElement("span");
-  tagElement.className = "badge bg-primary p-2 me-2";
+  tagElement.className = "badge bg-primary p-4 me-2";
   tagElement.textContent = tag;
+  tagElement.setAttribute("data-type", type);
+  tagElement.setAttribute("data-value", tag);
 
   const closeButton = document.createElement("button");
   closeButton.className = "btn-close btn-close-white ms-2";
   closeButton.setAttribute("aria-label", "Close");
+
+  selectedFilters[type].push(tag.toLowerCase());
+
   closeButton.addEventListener("click", () => {
-    tagElement.remove();
-    removeFilter(tag, type); // Supprime le filtre
+    removeTag(tag, type);
   });
 
   tagElement.appendChild(closeButton);
   selectedTagsContainer.appendChild(tagElement);
 
-  // Ajoute le filtre sélectionné
-  selectedFilters[type].push(tag);
-  filterRecipes(); // Relance le filtrage des recettes
+  filterRecipes(); // Met à jour les recettes et les filtres
 }
 
-function removeFilter(tag, type) {
-  selectedFilters[type] = selectedFilters[type].filter((item) => item !== tag);
-  filterRecipes(); // Relance le filtrage des recettes
+/**
+ * Retire un tag sélectionné de l'interface et de 'selectedFilters'.
+ * @param {string} tag - Le texte du tag à retirer.
+ * @param {string} type - Le type de tag.
+ */
+function removeTag(tag, type) {
+  selectedFilters[type] = selectedFilters[type].filter(
+    (item) => item.toLowerCase() !== tag.toLowerCase()
+  );
+
+  const tagElement = document.querySelector(
+    `[data-value="${tag}"][data-type="${type}"]`
+  );
+
+  if (tagElement) {
+    tagElement.remove();
+  }
+
+  filterRecipes(); // Met à jour les recettes et les filtres
+}
+
+/**
+ * Ajoute les écouteurs d'événements pour les champs de recherche des filtres
+ * et les clics sur les éléments des listes en utilisant la délégation.
+ */
+export function addFilterInputListeners() {
+  const dropdownMenus = document.querySelectorAll(".dropdown-menu");
+
+  dropdownMenus.forEach((menu) => {
+    const input = menu.querySelector("input");
+    const listElement = menu.querySelector("ul");
+    const type = listElement.id.split("-")[0];
+
+    // Gère la recherche dans les champs de filtre des dropdowns
+    if (input) {
+      input.addEventListener("input", (event) => {
+        const query = event.target.value.toLowerCase();
+        const allItems = listElement.querySelectorAll("a");
+
+        allItems.forEach((item) => {
+          const parentLi = item.closest("li");
+          if (item.textContent.toLowerCase().includes(query)) {
+            parentLi.style.display = "block";
+          } else {
+            parentLi.style.display = "none";
+          }
+        });
+      });
+    }
+
+    // Gère la sélection de tags par clic en utilisant la délégation
+    listElement.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target.classList.contains("dropdown-item")) {
+        event.preventDefault();
+        const tag = target.getAttribute("data-value");
+        createSelectedTag(tag, type);
+      }
+    });
+  });
+
+  // Ajoute l'écouteur pour la suppression des tags
+  const selectedTagsContainer = document.getElementById("selected-tags");
+  if (selectedTagsContainer) {
+    selectedTagsContainer.addEventListener("click", (event) => {
+      const closeButton = event.target.closest(".btn-close");
+      if (closeButton) {
+        const parent = closeButton.closest(".badge");
+        if (parent) {
+          const tag = parent.getAttribute("data-value");
+          const type = parent.getAttribute("data-type");
+          removeTag(tag, type);
+        }
+      }
+    });
+  }
 }

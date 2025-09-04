@@ -5,16 +5,38 @@
   padding: 20px 102px;  
 }
 
+.search-header{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 654px;
+    position: relative;
+}
+
+/* Styles pour le logo (positionnement absolu) */
+.header-logo {
+    position: absolute;
+    top: 2rem;
+    left: 4rem;
+}
+
+.header-logo img {
+    max-height: 50px;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+    margin-top: 51px;
+    margin-left: 70px;
+}
+
 /* Styles pour la barre de recherche */
 .search-wrapper {
-    max-width: 700px;
-    margin: 0 auto;
+    max-width: 960px;
+    margin: 30px auto 0;
 }
 
 .search-wrapper .input-group {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    width: 960px;
 }
 
 .search-wrapper .form-control {
@@ -43,16 +65,11 @@
 
 }
 
-
-
-
-
-
 .search-header {
   background-image: url("images/search-background.jpg"); 
   background-size: cover;
   background-position: center; 
-  padding: 80px 0 60px; 
+  padding: 2rem;
   max-width: 1440px;
   margin: 0 auto;
   
@@ -78,14 +95,142 @@
 }
 
 .search-header input {
-  max-width: 500px;
+    max-width: 892px;
+    height: 72px;
 }
+
 /* style pour le filtre  */
 .filter-gap {
   gap: 66px;
+  align-items: center;
 }
-.filter-dropdown{
-  
+.filter-gap > div:last-child {
+  margin-left: auto; /* Pousse le dernier div à droite */
+  font-family: 'Anton', sans-serif; /* Police Anton */
+}
+#recipe-count {
+  font-family: 'Anton', sans-serif; /* Police Anton */
+  font-size: 21px; /* Taille de police */
+  font-weight: 400; /* Regular */
+}
+
+/* fleche des filtre  */
+
+/* Cible la flèche par défaut */
+button.btn.btn-secondary.dropdown-toggle::after {
+  content: ""; /* Gardez le contenu vide si ce n'est pas nécessaire pour votre image */
+  display: inline-block; /* Gardez display selon vos besoins */
+  width: 20px; /* Ajustez à la taille de votre image */
+  height: 20px; /* Ajustez à la taille de votre image */
+  background-image: url('images/Vector\ 1.svg'); /* Remplacez par le chemin de votre image */
+  background-size: contain; /* Assurez-vous que l'image s'adapte */
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: middle; /* Alignez l'image verticalement */
+
+  /* Supprimez les styles de bordure d'origine */
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-style: none;
+  border-width: 0;
+
+  /* Ajoutez une transition pour une rotation fluide */
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Cible la flèche lorsque le menu déroulant est ouvert (en supposant qu'une classe '.show' est ajoutée) */
+button.btn.btn-secondary.dropdown-toggle.show::after {
+  transform: rotate(180deg); /* Fait pivoter la flèche lorsqu'elle est ouverte */
+}
+
+.btn[aria-expanded="true"] {
+  border-radius: 6px 6px 0 0;
+}
+.btn-secondary {
+  background-color: white;
+  color: black;
+}
+.btn:hover {
+    color: black;
+    background-color: white;
+}
+.btn:first-child:active{
+  background-color: white;
+  color: black;
+}
+.dropdown-item:hover{
+  background-color: #FFD15B;
+}
+/* Styles pour les boutons des filtres */
+.filter-dropdown .btn-secondary {
+  font-family: 'Manrope', sans-serif;
+  width: 195px;
+  height: 56px;
+  border: none; /* Supprime les bordures */
+  background-color: white; /* Fond blanc */
+  color: black; /* Texte noir */
+  text-align: left; /* Aligne le texte à gauche */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Styles pour le menu déroulant */
+.filter-dropdown .dropdown-menu {
+  font-family: 'Manrope', sans-serif;
+  width: 195px; /* Largeur identique au bouton */
+  border: none; /* Supprime les bordures */
+  border-top: none; /* Supprime la séparation entre le bouton et le menu */
+  transform: translate3d(0px, 45px, 0px) !important;
+  border-radius: 0 0 20px 20px; 
+  margin-top: -4px;
+}
+
+/* ------------------------ */
+/* Styles pour le champ de saisie avec loupe et croix */
+/* Styles pour le champ de saisie */
+.input-group .form-control {
+  padding-right: 40px; /* Espace pour la loupe */
+  padding-left: 40px; /* Espace pour la croix */
+}
+
+/* Icône de loupe */
+.input-group-text i.bi-search {
+  font-size: 16px;
+  color: #6c757d; /* Couleur grise */
+}
+
+/* Croix pour effacer */
+.input-group-text.clear-input {
+  color: #ff0000; /* Couleur rouge pour la croix */
+  font-size: 18px;
+  cursor: pointer;
+}
+/* ------------------------ */
+
+
+/* Supprime les bordures des éléments de la liste */
+.filter-dropdown .dropdown-item {
+  border: none;
+}
+
+/* Ajoute un effet au survol des éléments */
+.filter-dropdown .dropdown-item:hover {
+  background-color: #FFD15B; /* Couleur de survol */
+  color: black; /* Texte noir */
+}
+
+/* style badg  */
+.badge {
+  width: 200px;
+  height: 50px;
+  background-color: #FFD15B !important;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 
