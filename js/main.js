@@ -20,8 +20,6 @@ import { updateRecipeCount } from "./search.js";
 
 /**
  * Objet global pour suivre l'état des filtres sélectionnés.
- * Cet objet est exporté pour être utilisé par d'autres modules.
- * @type {{ingredients: string[], appliances: string[], utensils: string[]}}
  */
 export const selectedFilters = {
   ingredients: [],
@@ -30,9 +28,12 @@ export const selectedFilters = {
 };
 
 /**
- * Met à jour l'interface utilisateur en affichant les recettes, les tags de filtre et le compteur.
- * C'est le point central de l'affichage après chaque recherche ou filtrage.
- * @param {Recipe[]} recipesToDisplay - Le tableau de recettes à afficher.
+ * Contient les recettes filtrées par la recherche principale
+ */
+export let currentSearchResults = [...recipes];
+
+/**
+ * Met à jour l'interface utilisateur
  */
 function updateUI(recipesToDisplay) {
   displayRecipes(recipesToDisplay);
@@ -41,14 +42,11 @@ function updateUI(recipesToDisplay) {
 }
 
 /**
- * Filtre les recettes en fonction des tags sélectionnés.
- * S'exécute lorsque l'utilisateur ajoute ou retire un tag.
- * Cette fonction est exportée pour être appelée depuis le fichier filters.js.
+ * Filtre les recettes en fonction des tags sélectionnés
  */
 export function filterRecipes() {
-  let filteredRecipes = recipes;
+  let filteredRecipes = [...currentSearchResults]; // filtre sur le résultat de la recherche principale
 
-  // Filtre par les tags d'ingrédients
   if (selectedFilters.ingredients.length > 0) {
     filteredRecipes = filteredRecipes.filter((recipe) =>
       selectedFilters.ingredients.every((ingredientTag) =>
@@ -60,7 +58,6 @@ export function filterRecipes() {
     );
   }
 
-  // Filtre par les tags d'appareils
   if (selectedFilters.appliances.length > 0) {
     filteredRecipes = filteredRecipes.filter((recipe) =>
       selectedFilters.appliances.every(
@@ -70,7 +67,6 @@ export function filterRecipes() {
     );
   }
 
-  // Filtre par les tags d'ustensiles
   if (selectedFilters.utensils.length > 0) {
     filteredRecipes = filteredRecipes.filter((recipe) =>
       selectedFilters.utensils.every((utensilTag) =>
@@ -85,15 +81,13 @@ export function filterRecipes() {
 }
 
 /**
- * Gère la recherche principale dans la barre de recherche.
- * Déclenche une recherche si la requête a 3 caractères ou plus.
- * @param {string} query - Le texte entré par l'utilisateur.
+ * Recherche principale dans la barre de recherche
  */
 function handleMainSearch(query) {
   const normalizedQuery = query.toLowerCase().trim();
 
   if (normalizedQuery.length < 3) {
-    // Si la requête est trop courte, on se contente de filtrer par tags
+    currentSearchResults = [...recipes]; // pas de recherche texte
     filterRecipes();
     return;
   }
@@ -112,14 +106,12 @@ function handleMainSearch(query) {
       )
   );
 
+  currentSearchResults = finalFilteredRecipes; // stocke le résultat de la recherche principale
   updateUI(finalFilteredRecipes);
 }
 
 /**
- * Applique les filtres de tags à un tableau de recettes.
- * @param {Recipe[]} sourceRecipes - Le tableau de recettes à filtrer.
- * @param {Object} filters - L'objet contenant les filtres actifs.
- * @returns {Recipe[]} - Le tableau de recettes filtrées par tags.
+ * Applique les filtres de tags à un tableau de recettes
  */
 function applyFiltersToRecipes(sourceRecipes, filters) {
   let recipesToFilter = [...sourceRecipes];
@@ -157,7 +149,7 @@ function applyFiltersToRecipes(sourceRecipes, filters) {
   return recipesToFilter;
 }
 
-// Point d'entrée de l'application
+// Point d'entrée
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search");
 
@@ -169,6 +161,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Ajoute les écouteurs d'événements pour les filtres avancés (tags)
   addFilterInputListeners();
 });
