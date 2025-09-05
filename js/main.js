@@ -103,14 +103,46 @@ function handleMainSearch(query) {
     selectedFilters
   );
 
-  const finalFilteredRecipes = recipesWithTagsApplied.filter(
-    (recipe) =>
-      recipe.name.toLowerCase().includes(normalizedQuery) ||
-      recipe.description.toLowerCase().includes(normalizedQuery) ||
-      recipe.ingredients.some((ingredient) =>
-        ingredient.ingredient.toLowerCase().includes(normalizedQuery)
-      )
-  );
+  // const finalFilteredRecipes = recipesWithTagsApplied.filter(
+  //   (recipe) =>
+  //     recipe.name.toLowerCase().includes(normalizedQuery) ||
+  //     recipe.description.toLowerCase().includes(normalizedQuery) ||
+  //     recipe.ingredients.some((ingredient) =>
+  //       ingredient.ingredient.toLowerCase().includes(normalizedQuery)
+  //     )
+  // );
+
+  // version boucle for
+
+  const finalFilteredRecipes = [];
+  for (let i = 0; i < recipesWithTagsApplied.length; i++) {
+    const recipe = recipesWithTagsApplied[i];
+    let match = false;
+
+    // Vérifie le nom
+    if (recipe.name.toLowerCase().includes(normalizedQuery)) {
+      match = true;
+    }
+    // Vérifie la description
+    else if (recipe.description.toLowerCase().includes(normalizedQuery)) {
+      match = true;
+    }
+    // Vérifie les ingrédients
+    else {
+      for (let j = 0; j < recipe.ingredients.length; j++) {
+        if (
+          recipe.ingredients[j].ingredient
+            .toLowerCase()
+            .includes(normalizedQuery)
+        ) {
+          match = true;
+          break;
+        }
+      }
+    }
+
+    if (match) finalFilteredRecipes.push(recipe);
+  }
 
   updateUI(finalFilteredRecipes);
 }
