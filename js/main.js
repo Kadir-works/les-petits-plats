@@ -97,15 +97,6 @@ function handleMainSearch(query) {
     selectedFilters
   );
 
-  // const finalFilteredRecipes = recipesWithTagsApplied.filter(
-  //   (recipe) =>
-  //     recipe.name.toLowerCase().includes(normalizedQuery) ||
-  //     recipe.description.toLowerCase().includes(normalizedQuery) ||
-  //     recipe.ingredients.some((ingredient) =>
-  //       ingredient.ingredient.toLowerCase().includes(normalizedQuery)
-  //     )
-  // );
-
   // version boucle for
 
   const finalFilteredRecipes = [];
