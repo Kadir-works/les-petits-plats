@@ -53,10 +53,11 @@ function createRecipeCard(recipe) {
 }
 
 /**
- * Affiche toutes les cartes de recettes dans le conteneur principal.
- * @param {Array<object>} recipesList - Le tableau de recettes à afficher.
+ * Affiche les recettes dans le conteneur principal.
+ * @param {Array<object>} recipesList
+ * @param {string} query - Texte recherché
  */
-export function displayRecipes(recipesList) {
+export function displayRecipes(recipesList, query = "") {
   const recipesContainer = document.getElementById("recipes");
 
   if (!recipesContainer) {
@@ -70,7 +71,7 @@ export function displayRecipes(recipesList) {
   if (recipesList.length === 0) {
     recipesContainer.innerHTML = `
       <div class="col-12 text-center">
-        <p class="text-muted">Aucune recette ne correspond à votre critère. Vous pouvez chercher "tarte aux pommes", "poisson", etc.</p>
+        <p class="text-muted">Aucune recette ne contient « ${query} ». Vous pouvez chercher "tarte aux pommes", "poisson", etc.</p>
       </div>
     `;
   } else {

@@ -35,8 +35,8 @@ export let currentSearchResults = [...recipes];
 /**
  * Met à jour l'interface utilisateur
  */
-function updateUI(recipesToDisplay) {
-  displayRecipes(recipesToDisplay);
+function updateUI(recipesToDisplay, query = "") {
+  displayRecipes(recipesToDisplay, query);
   updateFilterTags(recipesToDisplay);
   updateRecipeCount(recipesToDisplay.length);
 }
@@ -107,7 +107,7 @@ function handleMainSearch(query) {
   );
 
   currentSearchResults = finalFilteredRecipes; // stocke le résultat de la recherche principale
-  updateUI(finalFilteredRecipes);
+  updateUI(finalFilteredRecipes, normalizedQuery);
 }
 
 /**
